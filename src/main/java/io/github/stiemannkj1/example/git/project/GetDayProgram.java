@@ -27,20 +27,48 @@ public class GetDayProgram {
 
     public static void main(String[] args) {
 
-        if (args.length == 0) {
-            System.err.println("Error: get-day requires one date string argument of the format: yyyy-MM-dd.");
-            System.exit(1);
-        } else if (args.length > 1) {
-            System.out.println("Warning: get-day only accepts one argument. Ignoring all arguments after " + args[0]);
+        String dateString = null;
+        String datePattern = null;
+
+        for (int i = 0; i < args.length; i++) {
+            if (dateString != null && datePattern != null) {
+                System.out.println("Warning: date string and pattern already set. Ignoring arguments after " +
+                        args[i - 1]);
+                break;
+            }
+
+            switch (args[i]) {
+                case "--pattern":
+                    // fall through:
+                case "-p":
+                    i++;
+                    datePattern = args[i];
+                break;
+                default:
+                    if (dateString == null) {
+                        dateString = args[i];
+                    }
+                break;
+            }
         }
 
-        String dateString = args[0];
+        if (datePattern == null) {
+            datePattern = "yyyy-MM-dd";
+        }
+
+        if (dateString == null) {
+            System.err.println("Error: get-day requires a date string argument of the format: " + datePattern);
+            System.exit(1);
+        }
 
         try {
-            LocalDate date = LocalDate.parse(dateString);
+            LocalDate date = LocalDate.parse(dateString, DateTimeFormatter.ofPattern(datePattern));
             System.out.println(date.getDayOfWeek());
         } catch (DateTimeParseException e) {
-            System.err.println("Error: date string must be of the format: yyyy-MM-dd.");
+            System.err.println("Error: date string must be of the format: " + datePattern);
+        } catch (IllegalArgumentException e) {
+            System.err.println("Error: invalid date pattern. " + e.getMessage());
+        } finally {
             System.exit(1);
         }
 
