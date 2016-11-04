@@ -5,6 +5,6 @@ sourceCompatibility = '1.8'
 
 jar {
 	manifest {
-		attributes ("Main-Class": "io.github.stiemannkj1.example.git.project.GetDayProgram")
+		attributes ("Main-Class": "io.gitlab.stiemannkj1.example.git.project.GetDayProgram")
 	}
 }
